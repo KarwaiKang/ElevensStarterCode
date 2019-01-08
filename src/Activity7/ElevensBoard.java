@@ -1,5 +1,8 @@
 package Activity7;
 
+import Activity4.Card;
+import Activity4.Deck;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -187,6 +190,10 @@ public class ElevensBoard {
      */
     public boolean isLegal(List<Integer> selectedCards) {
 		/* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
+        int sum = 0;
+        for (int i : selectedCards)
+            sum += i;
+        return sum == 11 || sum == 0;
     }
 
     /**
@@ -199,6 +206,13 @@ public class ElevensBoard {
      */
     public boolean anotherPlayIsPossible() {
 		/* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
+        // Change to prevent the same card from being compared to itself.
+        for (Card card1 : cards) {
+            for (Card card2 : cards) {
+                if (card1.pointValue() + card2.pointValue() == 11)
+                    return true;
+            }
+        }
     }
 
 

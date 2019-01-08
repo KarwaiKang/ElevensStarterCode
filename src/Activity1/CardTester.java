@@ -6,8 +6,8 @@ package Activity1;
 public class CardTester {
    public static void main(String[] args) {
        Card[] cards = {
-               new Card("Jack", "Hearts", 11),
-               new Card("Queen", "Diamonds", 12),
+               new Card("Jack", "Hearts", 0),
+               new Card("Queen", "Diamonds", 0),
                new Card("Ace", "Spades", 1),
        };
 

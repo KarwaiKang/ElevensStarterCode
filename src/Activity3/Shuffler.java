@@ -75,14 +75,12 @@ public class Shuffler {
      * @param values is an array of integers simulating cards to be shuffled.
      */
     public static void selectionShuffle(int[] values) {
-        int[] out = new int[values.length];
-        int[] shuffled = new int[values.length];
-        for (int i = 0; i < values.length; i++) {
+        for (int k = values.length; k > 0; k--) {
             int r = (int) (Math.random() * values.length);
-            while (values[r] != null)
+            int temp = values[k];
+            values[k] = values[r];
+            values[r] = temp;
         }
-        for (int i = 0; i < values.length; i++)
-            values[i] = out[i];
     }
 }
 
