@@ -189,10 +189,12 @@ public class ElevensBoard {
      *         false otherwise.
      */
     public boolean isLegal(List<Integer> selectedCards) {
-		/* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
         int sum = 0;
+        if (selectedCards.size() == 2) {
+            return cards[selectedCards.get(0)].pointValue() + cards[selectedCards.get(0)].pointValue() == 11;
+        }
         for (int i : selectedCards)
-            sum += i;
+            sum += cards[i].pointValue();
         return sum == 11 || sum == 0;
     }
 
@@ -205,14 +207,27 @@ public class ElevensBoard {
      *         false otherwise.
      */
     public boolean anotherPlayIsPossible() {
-		/* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
-        // Change to prevent the same card from being compared to itself.
-        for (Card card1 : cards) {
-            for (Card card2 : cards) {
-                if (card1.pointValue() + card2.pointValue() == 11)
-                    return true;
+        boolean j = false, q = false, k = false;
+        for (int i = 0; i < cards.length; i++) {
+            switch (cards[i].rank()) {
+                case "jack":
+                    j = true;
+                    break;
+                case "queen":
+                    q = true;
+                    break;
+                case "king":
+                    k = true;
+                    break;
+                default:
+                    for (int h = 0; h < cards.length; h++) {
+                        if (i != h && cards[i].pointValue() + cards[h].pointValue() == 11)
+                            return true;
+                    }
+                    break;
             }
         }
+        return j && q && k;
     }
 
 
@@ -234,7 +249,7 @@ public class ElevensBoard {
      *              contain an 11-pair; false otherwise.
      */
     private boolean containsPairSum11(List<Integer> selectedCards) {
-		/* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
+        return cards[selectedCards.get(0)].pointValue() + cards[selectedCards.get(1)].pointValue() == 11;
     }
 
     /**
@@ -246,6 +261,20 @@ public class ElevensBoard {
      *              include a jack, a queen, and a king; false otherwise.
      */
     private boolean containsJQK(List<Integer> selectedCards) {
-		/* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
+        boolean j = false, q = false, k = false;
+        for (int i : selectedCards) {
+            switch (cards[i].rank()) {
+                case "jack":
+                    j = true;
+                    break;
+                case "queen":
+                    q = true;
+                    break;
+                case "king":
+                    k = true;
+                    break;
+            }
+        }
+        return j && q && k;
     }
 }
