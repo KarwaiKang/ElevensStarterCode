@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * The ElevensBoard class represents the board in a game of Elevens.
+ * The ThirteensBoard class represents the board in a game of Elevens.
  */
 public class ElevensBoard extends Board {
 
@@ -38,7 +38,7 @@ public class ElevensBoard extends Board {
 
 
     /**
-     * Creates a new <code>ElevensBoard</code> instance.
+     * Creates a new <code>ThirteensBoard</code> instance.
      */
     public ElevensBoard() {
         super(BOARD_SIZE, RANKS, SUITS, POINT_VALUES);

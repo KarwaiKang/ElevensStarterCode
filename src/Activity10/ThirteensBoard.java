@@ -1,17 +1,18 @@
-package Activity9;
+package Activity10;
+
+import Activity9.Board;
 
 import java.util.List;
-import java.util.ArrayList;
 
 /**
- * The ThirteensBoard class represents the board in a game of Elevens.
+ * The ThirteensBoard class represents the board in a game of Thirteens.
  */
-public class ElevensBoard extends Board {
+public class ThirteensBoard extends Board {
 
     /**
      * The size (number of cards) on the board.
      */
-    private static final int BOARD_SIZE = 9;
+    private static final int BOARD_SIZE = 10;
 
     /**
      * The ranks of the cards for this game to be sent to the deck.
@@ -29,7 +30,7 @@ public class ElevensBoard extends Board {
      * The values of the cards for this game to be sent to the deck.
      */
     private static final int[] POINT_VALUES =
-            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0};
+            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0};
 
     /**
      * Flag used to control debugging print statements.
@@ -40,36 +41,34 @@ public class ElevensBoard extends Board {
     /**
      * Creates a new <code>ThirteensBoard</code> instance.
      */
-    public ElevensBoard() {
+    public ThirteensBoard() {
         super(BOARD_SIZE, RANKS, SUITS, POINT_VALUES);
     }
 
     /**
      * Determines if the selected cards form a valid group for removal.
-     * In Elevens, the legal groups are (1) a pair of non-face cards
-     * whose values add to 11, and (2) a group of three cards consisting of
-     * a jack, a queen, and a king in some order.
+     * In Thirteens, the legal groups are (1) a pair of cards
+     * whose values add to 13, and (2) a king.
      * @param selectedCards the list of the indices of the selected cards.
      * @return true if the selected cards form a valid group for removal;
      *         false otherwise.
      */
     @Override
     public boolean isLegal(List<Integer> selectedCards) {
-        return (selectedCards.size() == 2 && containsPairSum11(selectedCards)) ||
-                (selectedCards.size() == 3 && containsJQK(selectedCards));
+        return (selectedCards.size() == 2 && containsPairSum13(selectedCards)) ||
+                (selectedCards.size() == 1 && containsK(selectedCards));
     }
 
     /**
      * Determine if there are any legal plays left on the board.
-     * In Elevens, there is a legal play if the board contains
-     * (1) a pair of non-face cards whose values add to 11, or (2) a group
-     * of three cards consisting of a jack, a queen, and a king in some order.
+     * In Thirteens, there is a legal play if the board contains
+     * (1) a pair of cards whose values add to 13, or (2) a king.
      * @return true if there is a legal play left on the board;
      *         false otherwise.
      */
     @Override
     public boolean anotherPlayIsPossible() {
-        return containsPairSum11(cardIndexes()) || containsJQK(cardIndexes());
+        return containsPairSum13(cardIndexes()) || containsK(cardIndexes());
     }
 
     /**
@@ -80,10 +79,10 @@ public class ElevensBoard extends Board {
      * @return true if the board entries in selectedCards
      *              contain an 11-pair; false otherwise.
      */
-    private boolean containsPairSum11(List<Integer> selectedCards) {
+    private boolean containsPairSum13(List<Integer> selectedCards) {
         for (int i = 0; i < selectedCards.size(); i++) {
             for (int j = 0; j < selectedCards.size(); j++) {
-                if (i != j && cardAt(selectedCards.get(i)).pointValue() + cardAt(selectedCards.get(j)).pointValue() == 11)
+                if (i != j && cardAt(selectedCards.get(i)).pointValue() + cardAt(selectedCards.get(j)).pointValue() == 13)
                     return true;
             }
         }
@@ -91,28 +90,18 @@ public class ElevensBoard extends Board {
     }
 
     /**
-     * Check for a JQK in the selected cards.
+     * Check for a K in the selected cards.
      * @param selectedCards selects a subset of this board.  It is list
      *                      of indexes into this board that are searched
-     *                      to find a JQK group.
+     *                      to find a K.
      * @return true if the board entries in selectedCards
-     *              include a jack, a queen, and a king; false otherwise.
+     *              includes a king; false otherwise.
      */
-    private boolean containsJQK(List<Integer> selectedCards) {
-        boolean j = false, q = false, k = false;
+    private boolean containsK(List<Integer> selectedCards) {
         for (int i : selectedCards) {
-            switch (cardAt(i).rank()) {
-                case "jack":
-                    j = true;
-                    break;
-                case "queen":
-                    q = true;
-                    break;
-                case "king":
-                    k = true;
-                    break;
-            }
+            if (cardAt(i).rank().equals("king"))
+                return true;
         }
-        return j && q && k;
+        return false;
     }
 }

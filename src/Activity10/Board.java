@@ -1,62 +1,44 @@
-package Activity7;
+package Activity10;
 
-import Activity4.Card;
-import Activity4.Deck;
+import Activity9.Card;
+import Activity9.Deck;
 
 import java.util.List;
 import java.util.ArrayList;
 
 /**
- * The ThirteensBoard class represents the board in a game of Elevens.
+ * This class represents a Board that can be used in a collection
+ * of solitaire games similar to Elevens.  The variants differ in
+ * card removal and the board size.
  */
-public class ElevensBoard {
-
-    /**
-     * The size (number of cards) on the board.
-     */
-    private static final int BOARD_SIZE = 9;
-
-    /**
-     * The ranks of the cards for this game to be sent to the deck.
-     */
-    private static final String[] RANKS =
-            {"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"};
-
-    /**
-     * The suits of the cards for this game to be sent to the deck.
-     */
-    private static final String[] SUITS =
-            {"spades", "hearts", "diamonds", "clubs"};
-
-    /**
-     * The values of the cards for this game to be sent to the deck.
-     */
-    private static final int[] POINT_VALUES =
-            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0};
-
+public abstract class Board {
 
     /**
      * The cards on this board.
      */
-    private Card[] cards;
+    private Activity9.Card[] cards;
 
     /**
      * The deck of cards being used to play the current game.
      */
-    private Deck deck;
+    private Activity9.Deck deck;
 
     /**
      * Flag used to control debugging print statements.
      */
     private static final boolean I_AM_DEBUGGING = false;
 
-
     /**
-     * Creates a new <code>ThirteensBoard</code> instance.
+     * Creates a new <code>Board</code> instance.
+     * @param size the number of cards in the board
+     * @param ranks the names of the card ranks needed to create the deck
+     * @param suits the names of the card suits needed to create the deck
+     * @param pointValues the integer values of the cards needed to create
+     *                    the deck
      */
-    public ElevensBoard() {
-        cards = new Card[BOARD_SIZE];
-        deck = new Deck(RANKS, SUITS, POINT_VALUES);
+    public Board(int size, String[] ranks, String[] suits, int[] pointValues) {
+        cards = new Activity9.Card[size];
+        deck = new Deck(ranks, suits, pointValues);
         if (I_AM_DEBUGGING) {
             System.out.println(deck);
             System.out.println("----------");
@@ -118,7 +100,7 @@ public class ElevensBoard {
      * @return the card at position k on the board.
      * @param k is the board position of the card to return.
      */
-    public Card cardAt(int k) {
+    public Activity9.Card cardAt(int k) {
         return cards[k];
     }
 
@@ -180,31 +162,21 @@ public class ElevensBoard {
     }
 
     /**
-     * Determines if the selected cards form a valid group for removal.
-     * In Elevens, the legal groups are (1) a pair of non-face cards
-     * whose values add to 11, and (2) a group of three cards consisting of
-     * a jack, a queen, and a king in some order.
+     * Method to be completed by the concrete class that determines
+     * if the selected cards form a valid group for removal.
      * @param selectedCards the list of the indices of the selected cards.
      * @return true if the selected cards form a valid group for removal;
      *         false otherwise.
      */
-    public boolean isLegal(List<Integer> selectedCards) {
-        return (selectedCards.size() == 2 && containsPairSum11(selectedCards)) ||
-                (selectedCards.size() == 3 && containsJQK(selectedCards));
-    }
+    public abstract boolean isLegal(List<Integer> selectedCards);
 
     /**
-     * Determine if there are any legal plays left on the board.
-     * In Elevens, there is a legal play if the board contains
-     * (1) a pair of non-face cards whose values add to 11, or (2) a group
-     * of three cards consisting of a jack, a queen, and a king in some order.
+     * Method to be completed by the concrete class that determines
+     * if there are any legal plays left on the board.
      * @return true if there is a legal play left on the board;
      *         false otherwise.
      */
-    public boolean anotherPlayIsPossible() {
-        return containsPairSum11(cardIndexes()) || containsJQK(cardIndexes());
-    }
-
+    public abstract boolean anotherPlayIsPossible();
 
     /**
      * Deal cards to this board to start the game.
@@ -213,49 +185,5 @@ public class ElevensBoard {
         for (int k = 0; k < cards.length; k++) {
             cards[k] = deck.deal();
         }
-    }
-
-    /**
-     * Check for an 11-pair in the selected cards.
-     * @param selectedCards selects a subset of this board.  It is list
-     *                      of indexes into this board that are searched
-     *                      to find an 11-pair.
-     * @return true if the board entries in selectedCards
-     *              contain an 11-pair; false otherwise.
-     */
-    private boolean containsPairSum11(List<Integer> selectedCards) {
-        for (int i = 0; i < selectedCards.size(); i++) {
-            for (int j = 0; j < selectedCards.size(); j++) {
-                if (i != j && cardAt(selectedCards.get(i)).pointValue() + cardAt(selectedCards.get(j)).pointValue() == 11)
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Check for a JQK in the selected cards.
-     * @param selectedCards selects a subset of this board.  It is list
-     *                      of indexes into this board that are searched
-     *                      to find a JQK group.
-     * @return true if the board entries in selectedCards
-     *              include a jack, a queen, and a king; false otherwise.
-     */
-    private boolean containsJQK(List<Integer> selectedCards) {
-        boolean j = false, q = false, k = false;
-        for (int i : selectedCards) {
-            switch (cardAt(i).rank()) {
-                case "jack":
-                    j = true;
-                    break;
-                case "queen":
-                    q = true;
-                    break;
-                case "king":
-                    k = true;
-                    break;
-            }
-        }
-        return j && q && k;
     }
 }
