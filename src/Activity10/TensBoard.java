@@ -7,12 +7,12 @@ import java.util.List;
 /**
  * The ThirteensBoard class represents the board in a game of Thirteens.
  */
-public class ThirteensBoard extends Board {
+public class TensBoard extends Board {
 
     /**
      * The size (number of cards) on the board.
      */
-    private static final int BOARD_SIZE = 10;
+    private static final int BOARD_SIZE = 13;
 
     /**
      * The ranks of the cards for this game to be sent to the deck.
@@ -30,7 +30,7 @@ public class ThirteensBoard extends Board {
      * The values of the cards for this game to be sent to the deck.
      */
     private static final int[] POINT_VALUES =
-            {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0};
+            {1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0};
 
     /**
      * Flag used to control debugging print statements.
@@ -41,7 +41,7 @@ public class ThirteensBoard extends Board {
     /**
      * Creates a new <code>ThirteensBoard</code> instance.
      */
-    public ThirteensBoard() {
+    public TensBoard() {
         super(BOARD_SIZE, RANKS, SUITS, POINT_VALUES);
     }
 
@@ -55,8 +55,8 @@ public class ThirteensBoard extends Board {
      */
     @Override
     public boolean isLegal(List<Integer> selectedCards) {
-        return (selectedCards.size() == 2 && containsPairSum13(selectedCards)) ||
-                (selectedCards.size() == 1 && containsK(selectedCards));
+        return (selectedCards.size() == 2 && containsPairSum10(selectedCards)) ||
+                (selectedCards.size() == 4 && containsQuartet(selectedCards));
     }
 
     /**
@@ -68,21 +68,21 @@ public class ThirteensBoard extends Board {
      */
     @Override
     public boolean anotherPlayIsPossible() {
-        return containsPairSum13(cardIndexes()) || containsK(cardIndexes());
+        return containsPairSum10(cardIndexes()) || containsQuartet(cardIndexes());
     }
 
     /**
-     * Check for an 13-pair in the selected cards.
+     * Check for an 10-pair in the selected cards.
      * @param selectedCards selects a subset of this board.  It is list
      *                      of indexes into this board that are searched
-     *                      to find an 13-pair.
+     *                      to find an 10-pair.
      * @return true if the board entries in selectedCards
-     *              contain an 13-pair; false otherwise.
+     *              contain an 10-pair; false otherwise.
      */
-    private boolean containsPairSum13(List<Integer> selectedCards) {
+    private boolean containsPairSum10(List<Integer> selectedCards) {
         for (int i = 0; i < selectedCards.size(); i++) {
             for (int j = 0; j < selectedCards.size(); j++) {
-                if (i != j && cardAt(selectedCards.get(i)).pointValue() + cardAt(selectedCards.get(j)).pointValue() == 13)
+                if (i != j && cardAt(selectedCards.get(i)).pointValue() + cardAt(selectedCards.get(j)).pointValue() == 10)
                     return true;
             }
         }
@@ -90,18 +90,31 @@ public class ThirteensBoard extends Board {
     }
 
     /**
-     * Check for a K in the selected cards.
+     * Check for a quartets of kings, queens, jacks, and tens in the selected cards.
      * @param selectedCards selects a subset of this board.  It is list
      *                      of indexes into this board that are searched
-     *                      to find a K.
+     *                      to find a quartet.
      * @return true if the board entries in selectedCards
-     *              includes a king; false otherwise.
+     *              includes a quartet; false otherwise.
      */
-    private boolean containsK(List<Integer> selectedCards) {
+    private boolean containsQuartet(List<Integer> selectedCards) {
+        int k = 0, q = 0, j = 0, t = 0;
         for (int i : selectedCards) {
-            if (cardAt(i).rank().equals("king"))
-                return true;
+            switch (cardAt(i).rank()) {
+                case "jack":
+                    j++;
+                    break;
+                case "queen":
+                    q++;
+                    break;
+                case "king":
+                    k++;
+                    break;
+                case "10":
+                    t++;
+                    break;
+            }
         }
-        return false;
+        return k > 3 || q > 3 || j > 3 || t > 3;
     }
 }
